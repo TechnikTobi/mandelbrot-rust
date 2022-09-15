@@ -12,7 +12,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build:
+  build_and_publish:
   
     strategy:
       matrix:
@@ -22,17 +22,64 @@ jobs:
 
     steps:
     
-      # Check out the repository (basically downloads the source code)
+        # Check out the repository (basically downloads the source code)
       - uses: actions/checkout@v3
       
-      # Build
+        # Build
       - name: Build
         run: cargo build --verbose
         
-      # Test
+        # Test
       - name: Run tests
         run: cargo test --verbose
         
-      # Debugging
-      - name: List stuff
-        run: ls -R
+        
+        # Create Artifact
+      - name: Create Artifact
+        run: |
+          mkdir ${{ matrix.os }}-release
+          cp target/release/mandelbrot-rust ${{ matrix.os }}-release/      
+      
+      
+        # ZIP Artifact
+      - name: ZIP Artifact (non-windows)
+        run: |
+          zip -r ${{ matrix.os }}.zip ${{ matrix.os }}-release/
+        if: matrix.os != 'windows-latest'
+          
+      - name: ZIP Artifact (windows)
+        run: |
+          7z a "${{ matrix.os }}.zip" "${{ matrix.os }}-release/"
+        if: matrix.os == 'windows-latest'
+      
+      
+        # Publish Artifact
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          retention-days: 1
+          name: ${{ matrix.os }}
+          path: ${{ matrix.os }}.zip
+          
+
+
+  release:
+    name: "Release"
+    needs: build_and_publish
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      - uses: actions/download-artifact@v2
+      
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Latest (development) Build"
+          files: |
+            ubuntu-latest/ubuntu-latest.zip
+          # macos-latest/macos-latest.zip
+          # windows-latest/windows-latest.zip
