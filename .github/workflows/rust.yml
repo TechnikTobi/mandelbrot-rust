@@ -1,0 +1,38 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+  
+    strategy:
+      matrix:
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    
+      # Check out the repository (basically downloads the source code)
+      - uses: actions/checkout@v3
+      
+      # Build
+      - name: Build
+        run: cargo build --verbose
+        
+      # Test
+      - name: Run tests
+        run: cargo test --verbose
+        
+      # Debugging
+      - name: List stuff
+        run: ls -R
