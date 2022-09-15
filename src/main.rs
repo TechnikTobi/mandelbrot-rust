@@ -1,7 +1,33 @@
 mod mandelbrot;
-use mandelbrot::iteration_checker;
+mod generator;
+
+use generator::generate_raw_data;
 
 fn main() {
-	println!("Hello, world!");
-	println!("{}", iteration_checker(1.1, 1.2, 100));
+
+	let test = generate_raw_data(
+		80,
+		40,
+		0.0,
+		0.0,
+		0.4,
+		100
+	);
+
+	for y in 0..40
+	{
+		for x in 0..80
+		{
+			if test[80*y + x] < 50
+			{
+				print!(" ");
+			}
+			else
+			{
+				print!("#");
+			}
+		}
+		println!("");
+	}
+
 }
