@@ -33,12 +33,23 @@ jobs:
         run: cargo test --release --verbose
         
         
+        # Listing everything for debugging
+      - name: List all
+        run: ls -R
+        
+        
         # Create Artifact
-      - name: Create Artifact
+      - name: Create Artifact (non-windows)
         run: |
-          ls -R
           mkdir ${{ matrix.os }}-release
           cp target/release/mandelbrot-rust ${{ matrix.os }}-release/      
+        if: matrix.os != 'windows-latest'
+          
+      - name: Create Artifact (windows)
+        run: |
+          mkdir ${{ matrix.os }}-release
+          cp target/release/mandelbrot-rust.exe ${{ matrix.os }}-release/
+        if: matrix.os == 'windows-latest'
       
       
         # ZIP Artifact
