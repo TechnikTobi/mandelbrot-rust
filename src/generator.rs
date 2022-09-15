@@ -1,6 +1,8 @@
+use crate::mandelbrot::iteration_checker;
+
 const DEFAULT_SPAN: f64 = 2.0;
 
-fn 
+pub fn 
 generate_raw_data 
 (
 	width: u16,
@@ -18,7 +20,7 @@ generate_raw_data
 	let y_span = ppi * (height as f64);
 
 	let x_start = x_mid - x_span/2.0;
-	let y_start = y_mid + y_span/2.0;
+	let y_end = y_mid + y_span/2.0;
 
 	let mut raw_data = Vec::new();
 
@@ -26,8 +28,11 @@ generate_raw_data
 	{
 		for x in 0..width
 		{
-			raw_data.push(0
-			);
+			raw_data.push(iteration_checker(
+				x_start + ppi * x as f64,
+				y_end - ppi * y as f64,
+				iterations
+			));
 		}
 	}
 
