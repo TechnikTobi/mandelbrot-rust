@@ -27,16 +27,17 @@ jobs:
       
         # Build
       - name: Build
-        run: cargo build --verbose
+        run: cargo build --release --verbose
         
         # Test
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --release --verbose
         
         
         # Create Artifact
       - name: Create Artifact
         run: |
+          ls -R
           mkdir ${{ matrix.os }}-release
           cp target/release/mandelbrot-rust ${{ matrix.os }}-release/      
       
