@@ -16,8 +16,7 @@ jobs:
   
     strategy:
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -82,5 +81,5 @@ jobs:
           title: "Latest (development) Build"
           files: |
             ubuntu-latest/ubuntu-latest.zip
-          # macos-latest/macos-latest.zip
-          # windows-latest/windows-latest.zip
+            macos-latest/macos-latest.zip
+            windows-latest/windows-latest.zip
