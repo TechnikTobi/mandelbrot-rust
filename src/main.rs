@@ -1,7 +1,9 @@
 mod mandelbrot;
 mod generator;
+mod png_writer;
 
 use generator::generate_raw_data;
+use png_writer::write_png;
 
 fn main() {
 
@@ -29,5 +31,7 @@ fn main() {
 		}
 		println!("");
 	}
+
+	write_png(10, 10, "test.png", Vec::new());
 
 }
