@@ -5,8 +5,8 @@ write_png
 (
 	width: u16,
 	height: u16,
-	filename: &str,
-	rgb_data: std::vec::Vec<u8>
+	filename: String, // &str,
+	rgb_data: &Vec<u8>
 )
 {
 	let mut image_buffer = image::ImageBuffer::new(
@@ -14,12 +14,16 @@ write_png
 		height.into()
 	);
 
-	for (_, _, pixel) in image_buffer.enumerate_pixels_mut() 
+	assert!(width as usize * height as usize * 3 == rgb_data.len());
+
+	for (x, y, pixel) in image_buffer.enumerate_pixels_mut() 
 	{
+
+		let pixel_index = (width as usize * y as usize + x as usize) * 3;
 		*pixel = image::Rgb([
-			0 as u8, 
-			0 as u8, 
-			0 as u8
+			rgb_data[pixel_index + 0], 
+			rgb_data[pixel_index + 1], 
+			rgb_data[pixel_index + 2] 
 		]);
 	}
 
