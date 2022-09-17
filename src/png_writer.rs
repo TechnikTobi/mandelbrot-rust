@@ -1,4 +1,5 @@
 use image;
+use rexiv2;
 
 pub fn
 write_png
@@ -27,5 +28,30 @@ write_png
 		]);
 	}
 
-	image_buffer.save(filename).unwrap();
+	image_buffer.save(&filename).unwrap();
+	write_exif_description(filename, String::from("Some description text"));
+}
+
+fn
+write_exif_description
+(
+	filename: String,
+	description: String
+)
+{
+
+	// Initialize library before it can be used
+	// Maybe not required at all?
+	// rexiv2::initialize().unwrap(); // .expect("Unable to initialize rexiv2");
+	
+	if let Ok(meta) = rexiv2::Metadata::new_from_path(&filename)
+	{
+		if meta
+		.set_tag_string("Exif.Image.ImageDescription", &description)
+		.is_ok()
+		{
+			meta.save_to_file(&filename).expect("Could not write metadata to image file");
+		}
+	}
+
 }
