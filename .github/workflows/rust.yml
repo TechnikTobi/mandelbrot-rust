@@ -47,17 +47,23 @@ jobs:
             
             
         # Build
-      - name: Build
+      - name: Build (non-windows)
+        if: matrix.os != 'windows-latest'
         run: cargo build --release --verbose
         
-        # Test
-      - name: Run tests
-        run: cargo test --release --verbose
+      - name: Build (windows)
+        if: matrix.os == 'windows-latest'
+        shell: msys2 {0}
+        run: cargo build --release --verbose
+        
+#        # Test
+#      - name: Run tests
+#        run: cargo test --release --verbose
         
         
-        # Listing everything for debugging
-      - name: List all
-        run: ls -R
+#        # Listing everything for debugging
+#      - name: List all
+#        run: ls -R
         
         
         # Create Artifact
@@ -68,6 +74,7 @@ jobs:
         if: matrix.os != 'windows-latest'
           
       - name: Create Artifact (windows)
+        shell: msys2 {0}
         run: |
           mkdir ${{ matrix.os }}-release
           cp target/release/mandelbrot-rust.exe ${{ matrix.os }}-release/
@@ -81,6 +88,7 @@ jobs:
         if: matrix.os != 'windows-latest'
           
       - name: ZIP Artifact (windows)
+        shell: msys2 {0}
         run: |
           7z a "${{ matrix.os }}.zip" "${{ matrix.os }}-release/"
         if: matrix.os == 'windows-latest'
