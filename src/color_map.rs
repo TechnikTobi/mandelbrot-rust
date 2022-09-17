@@ -133,36 +133,38 @@ color_mode_13
 
         for value in raw_data
         {
-                let t_value = (*value % 256) as u16;
+                let t_value = (((*value % 256) as i16 - 1) % 16) as i16 + 1;
 
-                let mut red: u16   = 0;
-                let mut green: u16 = 0;
-                let mut blue:u16   = 0;
+		let increasing = (min(255, 16*t_value))		as u8;
+		let decreasing = (255 - min(255, 16*t_value))	as u8;
 
-                match t_value
+                let mut red: u8   = 0;
+                let mut green: u8 = 0;
+                let mut blue:u8   = 0;
+
+                match (*value % 255) as u8
                 {
-			0  ..=16  => {											blue = min(255, 16*t_value); },
-			17 ..=32  => { red = min(255, 16*(t_value-16));							blue = 255; },
-			33 ..=48  => { red = 255;									blue = 255-min(255, 16*(t_value-32)); },
-			49 ..=64  => { red = 255-min(255, 16*(t_value-48)); },
-			65 ..=80  => { 						green = min(255, 16*(t_value-64)); },
-			81 ..=96  => { 						green = 255;				blue = min(255, 16*(t_value-80)); },
-			97 ..=112 => { 						green = 255-min(255, 16*(t_value-96));	blue = 255; },
-			113..=128 => { 											blue = 255-min(255, 16*(t_value-112)); },
-			129..=144 => { red = min(255, 16*(t_value-128)); },
-			145..=160 => { red = 255;				green = min(255, 16*(t_value-144)); },
-			161..=176 => { red = 255-min(255, 16*(t_value-160));	green = 255; },
-			177..=192 => { 						green = 255-min(255, 16*(t_value-176)); },
-			193..=208 => { red = min(255, 16*(t_value-192)); },
-			209..=224 => { red = 255;				green = min(255, 16*(t_value-208)); },
-			225..=240 => { red = 255;				green = 255;				blue = min(255, 16*(t_value-224)); },
-			241..=255 => { red = 255-min(255, 16*(t_value-240));	green = 255-min(255, 16*(t_value-240));	blue = 255-min(255, 16*(t_value-240)); },
-			256..=u16::MAX => {},
+			0  ..=16  => {							blue = increasing; },
+			17 ..=32  => { red = increasing;				blue = 255; },
+			33 ..=48  => { red = 255;					blue = decreasing; },
+			49 ..=64  => { red = decreasing; },
+			65 ..=80  => { 				green = increasing; },
+			81 ..=96  => { 				green = 255;		blue = increasing; },
+			97 ..=112 => { 				green = decreasing;	blue = 255; },
+			113..=128 => { 							blue = decreasing; },
+			129..=144 => { red = increasing; },
+			145..=160 => { red = 255;		green = increasing; },
+			161..=176 => { red = decreasing;	green = 255; },
+			177..=192 => { 				green = decreasing; },
+			193..=208 => { red = increasing; },
+			209..=224 => { red = 255;		green = increasing; },
+			225..=240 => { red = 255;		green = 255;		blue = increasing; },
+			241..=255 => { red = decreasing;	green = decreasing;	blue = decreasing; },
                 };
 
-                rgb_data.push(min(255, red) as u8);
-                rgb_data.push(min(255, green) as u8);
-                rgb_data.push(min(255, blue) as u8);
+                rgb_data.push(red);
+                rgb_data.push(green);
+                rgb_data.push(blue);
         }
 
         return rgb_data;
