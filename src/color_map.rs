@@ -162,7 +162,7 @@ color_mode_13
 			241..=255 => { red = decreasing;	green = decreasing;	blue = decreasing; },
                 };
 
-		if (*value == iterations)
+		if *value == iterations
 		{
 			red = 0;
 			green = 0;
