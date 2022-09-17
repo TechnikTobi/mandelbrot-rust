@@ -60,7 +60,7 @@ impl CliArgs
 				.long("iterations")
 				.takes_value(true)
 				.help("Number of max iterations to use for generation")
-				.default_value("100")
+				.default_value("255")
 			)
 			.arg(Arg::with_name("output_file")
 				.short('o')
