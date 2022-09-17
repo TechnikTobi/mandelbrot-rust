@@ -8,6 +8,7 @@ pub struct CliArgs
 	pub y_mid: f64,
 	pub zoom: f64,
 	pub iterations: u64,
+	pub color_mode: u8,
 	pub output_file_name: String
 }
 
@@ -62,6 +63,13 @@ impl CliArgs
 				.help("Number of max iterations to use for generation")
 				.default_value("255")
 			)
+			.arg(Arg::with_name("color_mode")
+				.short('c')
+				.long("color_mode")
+				.takes_value(true)
+				.help("The color mode to use for mapping raw to image data")
+				.default_value("0")
+			)
 			.arg(Arg::with_name("output_file")
 				.short('o')
 				.long("output_file")
@@ -79,6 +87,7 @@ impl CliArgs
 			y_mid: value_t!(cli.value_of("y_mid"), f64).unwrap_or(0.0 as f64),
 			zoom: value_t!(cli.value_of("zoom"), f64).unwrap_or(0.5 as f64),
 			iterations: value_t!(cli.value_of("iterations"), u64).unwrap_or(100 as u64),
+			color_mode: value_t!(cli.value_of("color_mode"), u8).unwrap_or(0 as u8),
 			output_file_name: value_t!(cli.value_of("output_file"), String).unwrap_or(String::from("image.png"))
 		};
 

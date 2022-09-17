@@ -26,7 +26,7 @@ fn main() {
 	let rgb_data = map_raw_to_rgb(
 		&raw_data, 
 		args.iterations,
-		to_EColorMode(0) // EColorMode::DEFAULT // BLUE
+		to_EColorMode(args.color_mode)
 	);
 
 	/*
