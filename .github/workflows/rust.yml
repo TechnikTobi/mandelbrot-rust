@@ -16,13 +16,23 @@ jobs:
   
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
     
         # Check out the repository (basically downloads the source code)
       - uses: actions/checkout@v3
+      
+        # Install gexiv2
+      - name: gexiv2 (macos-latest)
+        if: matrix.os == 'macos-latest'
+        run: brew install gexiv2
+        
+      - name: gexiv2 (ubuntu-latest)
+        if: matrix.os == 'ubuntu-latest'
+        run: apt-get install -y libgexiv2-dev
       
         # Build
       - name: Build
@@ -93,4 +103,4 @@ jobs:
           files: |
             ubuntu-latest/ubuntu-latest.zip
             macos-latest/macos-latest.zip
-            windows-latest/windows-latest.zip
+          #  windows-latest/windows-latest.zip
