@@ -14,7 +14,7 @@ fn main() {
 	let args = CliArgs::get();
 	args.print();
 
-	let test = generate_raw_data(
+	let raw_data = generate_raw_data(
 		args.width,
 		args.height,
 		args.x_mid,
@@ -23,8 +23,10 @@ fn main() {
 		args.iterations
 	);
 
-	let test_rgb = map_raw_to_rgb(
-		&test, args.iterations, EColorMode::BLUE
+	let rgb_data = map_raw_to_rgb(
+		&raw_data, 
+		args.iterations,
+		EColorMode::DEFAULT // BLUE
 	);
 
 	/*
@@ -49,6 +51,6 @@ fn main() {
 		args.width, 
 		args.height, 
 		args.output_file_name, 
-		&test_rgb
+		&rgb_data
 	);
 }
