@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [ubuntu-latest, macos-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -33,7 +33,19 @@ jobs:
       - name: gexiv2 (ubuntu-latest)
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y libgexiv2-dev
-      
+        
+      - name: gexiv2 (windows-latest)
+        if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          path-type: inherit
+          update: true
+          install: >-
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-gexiv2
+            
+            
         # Build
       - name: Build
         run: cargo build --release --verbose
@@ -101,6 +113,6 @@ jobs:
           prerelease: false
           title: "Latest (development) Build"
           files: |
-            ubuntu-latest/ubuntu-latest.zip
-            macos-latest/macos-latest.zip
-          #  windows-latest/windows-latest.zip
+            windows-latest/windows-latest.zip
+#            ubuntu-latest/ubuntu-latest.zip
+#            macos-latest/macos-latest.zip
