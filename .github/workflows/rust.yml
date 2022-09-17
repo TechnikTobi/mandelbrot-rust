@@ -32,7 +32,7 @@ jobs:
         
       - name: gexiv2 (ubuntu-latest)
         if: matrix.os == 'ubuntu-latest'
-        run: apt-get install -y libgexiv2-dev
+        run: sudo apt-get install -y libgexiv2-dev
       
         # Build
       - name: Build
