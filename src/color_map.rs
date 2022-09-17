@@ -142,7 +142,7 @@ color_mode_13
                 let mut green: u8 = 0;
                 let mut blue:u8   = 0;
 
-                match (*value % 255) as u8
+                match (*value % 256) as u8
                 {
 			0  ..=16  => {							blue = increasing; },
 			17 ..=32  => { red = increasing;				blue = 255; },
@@ -161,6 +161,13 @@ color_mode_13
 			225..=240 => { red = 255;		green = 255;		blue = increasing; },
 			241..=255 => { red = decreasing;	green = decreasing;	blue = decreasing; },
                 };
+
+		if (*value == iterations)
+		{
+			red = 0;
+			green = 0;
+			blue = 0;
+		}
 
                 rgb_data.push(red);
                 rgb_data.push(green);
