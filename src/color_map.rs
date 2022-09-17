@@ -6,6 +6,23 @@ pub enum EColorMode
 }
 
 pub fn
+to_EColorMode
+(
+        mode: u8
+)
+-> EColorMode
+{
+        match mode
+        {
+                1 => EColorMode::BLUE,
+                2 => EColorMode::BW,
+                _ => EColorMode::DEFAULT,
+        }
+}
+
+
+
+pub fn
 map_raw_to_rgb
 (
 	raw_data: &Vec<u64>,

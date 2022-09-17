@@ -6,7 +6,7 @@ mod cli;
 
 use generator::generate_raw_data;
 use png_writer::write_png;
-use color_map::{EColorMode, map_raw_to_rgb};
+use color_map::{EColorMode, to_EColorMode, map_raw_to_rgb};
 use cli::CliArgs;
 
 fn main() {
@@ -26,7 +26,7 @@ fn main() {
 	let rgb_data = map_raw_to_rgb(
 		&raw_data, 
 		args.iterations,
-		EColorMode::DEFAULT // BLUE
+		to_EColorMode(0) // EColorMode::DEFAULT // BLUE
 	);
 
 	/*
