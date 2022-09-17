@@ -103,6 +103,22 @@ impl CliArgs
 		println!("y_mid:      {}", self.y_mid);
 		println!("Zoom:       {}", self.zoom);
 		println!("Iterations: {}", self.iterations);
+		println!("Color Mode: {}", self.color_mode);
 		println!("Output:     {}", self.output_file_name);
+	}
+
+	pub fn
+	to_cli_string(&self)
+	-> String
+	{
+		format!("-w {} -h {} --x_mid={} --y_mid={} --zoom={} -i {} -c {}",
+			self.width,
+			self.height,
+			self.x_mid,
+			self.y_mid,
+			self.zoom,
+			self.iterations,
+			self.color_mode
+		)
 	}
 }

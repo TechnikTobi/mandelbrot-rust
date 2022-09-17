@@ -50,7 +50,8 @@ fn main() {
 	write_png(
 		args.width, 
 		args.height, 
-		args.output_file_name, 
+		&args.output_file_name, 
+		&args.to_cli_string(),
 		&rgb_data
 	);
 }

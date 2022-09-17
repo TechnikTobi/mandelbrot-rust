@@ -6,7 +6,8 @@ write_png
 (
 	width: u16,
 	height: u16,
-	filename: String, // &str,
+	filename: &String,
+	description: &String,
 	rgb_data: &Vec<u8>
 )
 {
@@ -29,14 +30,14 @@ write_png
 	}
 
 	image_buffer.save(&filename).unwrap();
-	write_exif_description(filename, String::from("Some description text"));
+	write_exif_description(filename, description);
 }
 
 fn
 write_exif_description
 (
-	filename: String,
-	description: String
+	filename: &String,
+	description: &String
 )
 {
 
