@@ -1,6 +1,8 @@
 # mandelbrot-rust
 Implementing a Mandelbrot Image Generator (In Rust) (Agai... wait, this is my first time using Rust!)
 
+![example workflow](https://github.com/TechnikTobi/mandelbrot-rust/actions/workflows/rust.yml/badge.svg)
+
 ## Examples
 ```mandelbrot-rust -w 4000 -h 4000 --x_mid=-1.25737518304050244765 --y_mid=0.378759463618701690545 -z 6800000000 -i 2040 -c 13```
 
