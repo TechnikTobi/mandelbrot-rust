@@ -1,11 +1,13 @@
 mod mandelbrot;
 mod generator;
+mod exif_writer;
 mod png_writer;
 mod color_map;
 mod cli;
 
 use generator::generate_raw_data;
 use png_writer::write_png;
+use exif_writer::write_exif_description;
 use color_map::{to_EColorMode, map_raw_to_rgb};
 use cli::CliArgs;
 
@@ -51,7 +53,11 @@ fn main() {
 		args.width, 
 		args.height, 
 		&args.output_file_name, 
-		&args.to_cli_string(),
 		&rgb_data
+	);
+
+	write_exif_description(
+		&args.output_file_name,
+		&args.to_cli_string()
 	);
 }
