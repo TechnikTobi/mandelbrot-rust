@@ -1,8 +1,8 @@
 name: Rust
 
 on:
-  push:
-    branches: [ "main" ]
+#  push:
+#    branches: [ "main" ]
 #  pull_request:
 #    branches: [ "main" ]
   workflow_dispatch:
@@ -16,6 +16,8 @@ jobs:
   
     strategy:
       matrix:
+        # Currently working on getting this to run on windows (so macos and ubuntu are disabled for now)
+        # However, there seems to be a problem with one of the crates: https://github.com/felixc/rexiv2/issues/59#issue-1376907301
         # os: [ubuntu-latest, windows-latest, macos-latest]
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
@@ -55,15 +57,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: msys2 {0}
         run: cargo build --release --verbose
-        
-#        # Test
-#      - name: Run tests
-#        run: cargo test --release --verbose
-        
-        
-#        # Listing everything for debugging
-#      - name: List all
-#        run: ls -R
         
         
         # Create Artifact
