@@ -1,8 +1,8 @@
 name: Rust
 
 on:
-  push:
-    branches: [ "main" ]
+#  push:
+#    branches: [ "main" ]
 #  pull_request:
 #    branches: [ "main" ]
   workflow_dispatch:
@@ -43,7 +43,6 @@ jobs:
           install: >-
             mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-gexiv2
-            mingw-w64-x86_64-rust
             
             
         # Build
@@ -51,6 +50,8 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: cargo build --release --verbose
         
+        # Note: The rustup-stuff solves a problem related to library linking
+        # (Source for Solution: https://stackoverflow.com/a/64121601 )
       - name: Build (windows)
         if: matrix.os == 'windows-latest'
         shell: msys2 {0}
