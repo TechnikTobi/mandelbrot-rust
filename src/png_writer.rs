@@ -1,5 +1,5 @@
 use image;
-use rexiv2;
+extern crate gexiv2_sys as gexiv2;
 
 pub fn
 write_png
@@ -41,6 +41,7 @@ write_exif_description
 )
 {
 
+	/*
 	// Initialize library before it can be used
 	// Maybe not required at all?
 	// rexiv2::initialize().unwrap(); // .expect("Unable to initialize rexiv2");
@@ -54,5 +55,33 @@ write_exif_description
 			meta.save_to_file(&filename).expect("Could not write metadata to image file");
 		}
 	}
+	*/
 
+	let mut error: *mut gexiv2::GError = std::ptr::null_mut();
+	let path = std::ffi::CString::new(filename.as_bytes()).unwrap();
+
+	// Prepare EXIF tag & value
+	let tag = std::ffi::CString::new("Exif.Image.ImageDescription").unwrap();
+        let value = std::ffi::CString::new(description.as_bytes()).unwrap();
+	
+	unsafe
+	{
+		// Create new Metadata struct
+		let metadata = gexiv2::gexiv2_metadata_new();
+
+		// Read in existing image file
+		gexiv2::gexiv2_metadata_open_path(metadata, path.as_ptr(), &mut error);
+
+		// Add description to Metadata
+		let result: libc::c_int = gexiv2::gexiv2_metadata_set_tag_string(
+			metadata,
+			tag.as_ptr(),
+			value.as_ptr()
+		);
+
+		// Save Metadata to image file
+		gexiv2::gexiv2_metadata_save_file(metadata, path.as_ptr(), &mut error);
+		
+	}
+	
 }
