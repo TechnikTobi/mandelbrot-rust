@@ -16,7 +16,8 @@ jobs:
   
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -43,6 +44,7 @@ jobs:
           install: >-
             mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-gexiv2
+            mingw-w64-x86_64-rust
             
             
         # Build
@@ -53,7 +55,10 @@ jobs:
       - name: Build (windows)
         if: matrix.os == 'windows-latest'
         shell: msys2 {0}
-        run: cargo build --release --verbose
+        run: |
+          rustup toolchain install stable-x86_64-pc-windows-gnu
+          rustup default stable-x86_64-pc-windows-gnu
+          cargo build --release --verbose
         
         
         # Create Artifact
