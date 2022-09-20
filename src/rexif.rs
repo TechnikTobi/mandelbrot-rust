@@ -2,8 +2,54 @@ use std::io::*;
 use std::io::Read;
 use std::io::BufReader;
 use std::fs::File;
+use crc::Crc;
 
 use crate::bitreader::BitReader;
+
+pub fn
+add_zTXt
+(
+	filename: &String,
+	raw_data: &Vec<u8>
+)
+{
+	let file = File::open(filename).expect("Could not open file");
+	let PNG_signature = vec![137, 80, 78, 71, 13, 10, 26, 10];
+
+	// Create reader of the file and read length of IHDR chunk
+	let mut reader = BufReader::new(file);
+	let mut IHDR_chunk_start = [0; 8];
+
+	// Seek to after the PNG signature, read 8 bytes 
+	// and assert that, in fact, 8 bytes were read
+	// Also check that this is in fact the IHDR chunk
+	reader.seek(SeekFrom::Start(PNG_signature.len().try_into().unwrap()));
+	let IHDR_chunk_start_bytes_read = reader.read(&mut IHDR_chunk_start).unwrap();
+	assert!(IHDR_chunk_start_bytes_read == 8);
+	if std::str::from_utf8(&IHDR_chunk_start[4..]) != Ok("IHDR")
+	{
+		panic!("Invalid PNG file: First chunk is NOT of type IHDR");
+	}
+
+	// Compute length of IHDR chunk
+	// Adding 4 at the end for the actual ASCII chars "IHDR"
+	let mut IHDR_chunk_length = 0 as u64;
+	for byte in &IHDR_chunk_start[0..4]
+	{
+		IHDR_chunk_length = IHDR_chunk_length * 256 + *byte as u64;
+	}
+	IHDR_chunk_length += 4;
+
+	// Seek to the next chunk and read everything stored there
+	reader.seek_relative(IHDR_chunk_length.into());
+	let mut post_zTXt_buffer = Vec::new();
+	reader.read_to_end(&mut post_ZTXt_buffer);
+
+
+	
+	println!("add_zTXt - Success!");
+		
+}
 
 pub fn
 rexif_fn
@@ -18,7 +64,7 @@ rexif_fn
 	let mut buffer = Vec::new();
 
 	// Start reading after signature
-	reader.seek(SeekFrom::Start(signature.len().try_into().unwrap()));
+	// reader.seek(SeekFrom::Start(signature.len().try_into().unwrap()));
 	
 	// Read data into buffer
 	reader.read_to_end(&mut buffer);
@@ -26,13 +72,13 @@ rexif_fn
 	// Convert buffer into linked list for easier access
 	let mut ll_buffer = std::collections::LinkedList::from_iter(buffer.iter());
 
-	/*	
-	for byte in ll_buffer
+	println!("BUFFER BYTES - START");
+	for byte in &ll_buffer
 	{
 		println!("{}", byte);
 		
 	}
-	*/
+	println!("BUFFER BYTES - END");
 
 	// Traverse linked list buffer
 	while ll_buffer.len() >= 12
@@ -90,6 +136,7 @@ rexif_fn
 		}
 	}
 
+	/*
 	let mut ll_bitter = std::collections::LinkedList::new();
 	// ll_bitter.push_front(54 as u8); // 1 as u8);
 	// ll_bitter.push_front(102 as u8); // 43 as u8);
@@ -101,6 +148,7 @@ rexif_fn
 	{
 		println!("{}", bitter.read_bit());
 	}
+	*/
 
 	// println!("{}", bitter.read_bits(9));
 
