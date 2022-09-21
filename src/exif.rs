@@ -68,6 +68,10 @@ impl U8conversion for String
 
 		// Can't simply return self.as_bytes().to_vec() as this won't include the NUL terminator
 		let mut u8_vec = self.as_bytes().to_vec();
+		for c in String::from("Hello World!").bytes()
+		{
+			u8_vec.push(c as u8);
+		}
 		u8_vec.push(0);
 		return u8_vec;
 	}

@@ -2,7 +2,10 @@ use std::io::*;
 use std::io::Read;
 use std::io::BufReader;
 use std::fs::File;
-use crc::Crc;
+use std::fs::OpenOptions;
+
+use crc::{Crc, CRC_32_ISO_HDLC};
+use deflate::deflate_bytes_zlib;
 
 use crate::bitreader::BitReader;
 
@@ -13,18 +16,26 @@ add_zTXt
 	raw_data: &Vec<u8>
 )
 {
-	let file = File::open(filename).expect("Could not open file");
 	let PNG_signature = vec![137, 80, 78, 71, 13, 10, 26, 10];
 
-	// Create reader of the file and read length of IHDR chunk
-	let mut reader = BufReader::new(file);
+	// let mut file = File::create(filename).expect("Could not open file");
+	let mut file = OpenOptions::new()
+		.write(true)
+		.read(true)
+		.open(filename)
+		.expect("Could not open file");
+	
 	let mut IHDR_chunk_start = [0; 8];
+
+	let mut seek_result = 0 as u64;
 
 	// Seek to after the PNG signature, read 8 bytes 
 	// and assert that, in fact, 8 bytes were read
 	// Also check that this is in fact the IHDR chunk
-	reader.seek(SeekFrom::Start(PNG_signature.len().try_into().unwrap()));
-	let IHDR_chunk_start_bytes_read = reader.read(&mut IHDR_chunk_start).unwrap();
+	seek_result = file.seek(SeekFrom::Start(PNG_signature.len().try_into().unwrap())).unwrap();
+	println!("{}", seek_result);
+
+	let IHDR_chunk_start_bytes_read = file.read(&mut IHDR_chunk_start).unwrap();
 	assert!(IHDR_chunk_start_bytes_read == 8);
 	if std::str::from_utf8(&IHDR_chunk_start[4..]) != Ok("IHDR")
 	{
@@ -32,7 +43,7 @@ add_zTXt
 	}
 
 	// Compute length of IHDR chunk
-	// Adding 4 at the end for the actual ASCII chars "IHDR"
+	// Adding 4 at the end for the CRC
 	let mut IHDR_chunk_length = 0 as u64;
 	for byte in &IHDR_chunk_start[0..4]
 	{
@@ -40,13 +51,44 @@ add_zTXt
 	}
 	IHDR_chunk_length += 4;
 
+	assert!(IHDR_chunk_length <= i64::MAX as u64);
+
 	// Seek to the next chunk and read everything stored there
-	reader.seek_relative(IHDR_chunk_length.into());
+	// then seek back to the position before the read operation
+	file.seek(SeekFrom::Current(IHDR_chunk_length.try_into().unwrap()));
 	let mut post_zTXt_buffer = Vec::new();
-	reader.read_to_end(&mut post_ZTXt_buffer);
+	file.read_to_end(&mut post_zTXt_buffer);
+	file.seek(SeekFrom::Current(-1 * (post_zTXt_buffer.len() as i64)));
 
+	// Construct the data to be written   z     T     X     t
+	let mut zTXt_data_vec: Vec<u8> = vec![0x7a, 0x54, 0x58, 0x74,
+	0x52, 0x61, 0x77, 0x20, 0x70, 0x72, 0x6F, 0x66, 0x69, 0x6C, 0x65, 0x20, 0x74, 0x79, 0x70, 0x65, 0x20, 0x65, 0x78, 0x69, 0x66, 0x00, 0x00];
+	// R     a     w     _     p     r     o     f     i     l     e     _     t     y     p     e     _     e     x     i     f   NUL   NUL
+	zTXt_data_vec.extend(deflate_bytes_zlib(&raw_data).iter());
 
+	// Compute CRC and append that to the data vector
+	// WARNING:  NOT SURE IF WRITE ORDER IS CORRECT!
+	let crc_struct = Crc::<u32>::new(&CRC_32_ISO_HDLC);
+	let checksum = crc_struct.checksum(&zTXt_data_vec);
+	for i in 0..4
+	{
+		zTXt_data_vec.push( (checksum >> (8 * (3-i))) as u8);
+	}
+
+	// Write length of data area
+	// Subtract 8 for "zTXt" and checksum
+	let raw_data_len = zTXt_data_vec.len() as u32 - 8;
+	for i in 0..4
+	{
+		file.write( &[(raw_data_len >> (8 * (3-i))) as u8] );
+	}
+
+	let write_result1 = file.write_all(&zTXt_data_vec);
+	let write_result2 = file.write_all(&post_zTXt_buffer);
 	
+	// println!("write_result1: {}", write_result1.err().unwrap());
+	// println!("write_result2: {}", write_result2.err().unwrap());
+
 	println!("add_zTXt - Success!");
 		
 }
