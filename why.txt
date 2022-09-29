@@ -1,0 +1,1 @@
+https://github.com/Exiv2/exiv2/blob/306424f589505bc6fa263513ef98b845600edd0b/src/pngchunk_int.cpp#L592
