@@ -1,4 +1,5 @@
-extern crate gexiv2_sys as gexiv2;
+use little_exif::metadata::Metadata;
+use little_exif::exif_tag::ExifTag;
 
 pub fn
 write_exif_description
@@ -8,47 +9,17 @@ write_exif_description
 )
 {
 
-        // Variables needed to interface gexiv2, which is a C library
-        let mut error: *mut gexiv2::GError = std::ptr::null_mut();
-        let path = std::ffi::CString::new(filename.as_bytes()).unwrap();
+	let file_path = std::path::Path::new(filename);
 
-        // Prepare EXIF tag & value as strings for C
-        let tag = std::ffi::CString::new("Exif.Image.ImageDescription").unwrap();
-        let value = std::ffi::CString::new(description.as_bytes()).unwrap();
+	// Create metadata struct
+	let mut metadata = Metadata::new_from_path(file_path).unwrap();
 
-        unsafe
-        {
-                // Create new Metadata struct
-                let metadata = gexiv2::gexiv2_metadata_new();
+	// Add the image description tag
+	metadata.set_tag(
+		ExifTag::ImageDescription(description.to_string())
+	);
 
-                // Read in existing image file
-                if 1 != gexiv2::gexiv2_metadata_open_path(metadata, path.as_ptr(), &mut error)
-                {
-                        panic!("{}", std::ffi::CStr::from_ptr((*error).message)
-                                .to_str()
-                                .unwrap()
-                        );
-                }
-
-                // Add description to Metadata
-                if 0 == gexiv2::gexiv2_metadata_set_tag_string(
-                        metadata,
-                        tag.as_ptr(),
-                        value.as_ptr()
-                )
-                {
-                        panic!("Error while setting description tag string");
-                }
-
-                // Save Metadata to image file
-                if 1 != gexiv2::gexiv2_metadata_save_file(metadata, path.as_ptr(), &mut error)
-                {
-                        panic!("{}", std::ffi::CStr::from_ptr((*error).message)
-                                .to_str()
-                                .unwrap()
-                        );
-                }
-
-        }
+	// Write metadata to image file
+	metadata.write_to_file(file_path);
 
 }

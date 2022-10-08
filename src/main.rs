@@ -31,24 +31,6 @@ fn main() {
 		to_EColorMode(args.color_mode)
 	);
 
-	/*
-	for y in 0..40
-	{
-		for x in 0..80
-		{
-			if test[80*y + x] < 50
-			{
-				print!(" ");
-			}
-			else
-			{
-				print!("#");
-			}
-		}
-		println!("");
-	}
-	*/
-
 	write_png(
 		args.width, 
 		args.height, 
@@ -60,4 +42,5 @@ fn main() {
 		&args.output_file_name,
 		&args.to_cli_string()
 	);
+	
 }
