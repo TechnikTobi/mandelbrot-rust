@@ -18,7 +18,7 @@ Implementing a Mandelbrot Image Generator (In Rust) (Agai... wait, this is my fi
 - ```num``` for handling complex numbers
 - ```image``` for writing image data as PNGs
 - ```clap``` for handling CLI option inputs
-- ```gexiv2``` for writing parameters as EXIF metadata (sidenote: this is a foreign C library) 
+- ```little_exif``` for writing parameters as EXIF metadata
 
 ## ToDo / Wishes
 - Functionality to also generate images of julia sets
