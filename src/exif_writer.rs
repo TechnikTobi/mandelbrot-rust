@@ -12,7 +12,7 @@ write_exif_description
 	let file_path = std::path::Path::new(filename);
 
 	// Create metadata struct
-	let mut metadata = Metadata::new_from_path(file_path);
+	let mut metadata = Metadata::new_from_path(file_path).unwrap();
 
 	// Add the image description tag
 	metadata.set_tag(
