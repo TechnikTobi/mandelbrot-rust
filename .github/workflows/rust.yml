@@ -23,42 +23,11 @@ jobs:
     
         # Check out the repository (basically downloads the source code)
       - uses: actions/checkout@v3
-      
-        # Install gexiv2
-      - name: gexiv2 (macos-latest)
-        if: matrix.os == 'macos-latest'
-        run: brew install gexiv2
-        
-      - name: gexiv2 (ubuntu-latest)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libgexiv2-dev
-        
-      - name: gexiv2 (windows-latest)
-        if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: mingw64
-          path-type: inherit
-          update: true
-          install: >-
-            mingw-w64-x86_64-pkg-config
-            mingw-w64-x86_64-gexiv2
             
             
         # Build
-      - name: Build (non-windows)
-        if: matrix.os != 'windows-latest'
+      - name: Build
         run: cargo build --release --verbose
-        
-        # Note: The rustup-stuff solves a problem related to library linking
-        # (Source for Solution: https://stackoverflow.com/a/64121601 )
-      - name: Build (windows)
-        if: matrix.os == 'windows-latest'
-        shell: msys2 {0}
-        run: |
-          rustup toolchain install stable-x86_64-pc-windows-gnu
-          rustup default stable-x86_64-pc-windows-gnu
-          cargo build --release --verbose
         
         
         # Create Artifact
@@ -69,7 +38,6 @@ jobs:
         if: matrix.os != 'windows-latest'
           
       - name: Create Artifact (windows)
-        shell: msys2 {0}
         run: |
           mkdir ${{ matrix.os }}-release
           cp target/release/mandelbrot-rust.exe ${{ matrix.os }}-release/
