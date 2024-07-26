@@ -30,9 +30,9 @@ to_EColorMode
 pub fn
 map_raw_to_rgb
 (
-    raw_data: &Vec<u64>,
+    raw_data:  &Vec<u64>,
     iterations: u64,
-    mode: EColorMode
+    mode:       EColorMode
 )
 -> Vec<u8>
 {
@@ -93,7 +93,7 @@ color_mode_default
 fn
 color_mode_blue
 (
-    raw_data: &Vec<u64>,
+    raw_data:  &Vec<u64>,
     iterations: u64
 )
 -> Vec<u8>
@@ -131,7 +131,7 @@ color_mode_blue
 fn
 color_mode_13
 (
-    raw_data: &Vec<u64>,
+    raw_data:  &Vec<u64>,
     iterations: u64
 )
 -> Vec<u8>
