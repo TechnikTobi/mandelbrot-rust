@@ -4,7 +4,8 @@ pub enum EColorMode
 {
     DEFAULT,
     BLUE,
-    M09,
+    M09_1,
+    M09_2,
     M13,
     BW
 }
@@ -21,7 +22,8 @@ to_EColorMode
     {
         1  =>   EColorMode::BLUE,
         2  =>   EColorMode::BW,
-        9  =>   EColorMode::M09,
+        91 =>   EColorMode::M09_1,
+        92 =>   EColorMode::M09_2,
         13 =>   EColorMode::M13,
         _  =>   EColorMode::DEFAULT,
     }
@@ -43,7 +45,8 @@ map_raw_to_rgb
     {
         EColorMode::BLUE    => color_mode_blue(raw_data, iterations),
         EColorMode::DEFAULT => color_mode_default(raw_data, iterations),
-        EColorMode::M09     => color_mode_9(raw_data, iterations),
+        EColorMode::M09_1   => color_mode_9(raw_data, iterations, false),
+        EColorMode::M09_2   => color_mode_9(raw_data, iterations, true),
         EColorMode::M13     => color_mode_13(raw_data, iterations),
         EColorMode::BW      => panic!("Not yet implemented"),
     }
@@ -134,8 +137,9 @@ color_mode_blue
 fn
 color_mode_9
 (
-    raw_data:  &Vec<u64>,
-    iterations: u64
+    raw_data:      &Vec<u64>,
+    iterations:     u64,
+    swap_red_green: bool,
 )
 -> Vec<u8>
 {
@@ -162,7 +166,7 @@ color_mode_9
             151..=175 => { red = u_value; green = 255;     blue = 255;     },
             176..=200 => { red = 255;     green = v_value; blue = 255;     },
             201..=225 => { red = 255;                      blue = v_value; },
-            226..=255 => { red = 255 - (15.0 * (t_value - 225) as f32) as u8; },
+            226..=255 => { red = 255 - (10.0 * (t_value - 225) as f32) as u8; },
         };
 
         if t_value == 0 || *value == iterations
@@ -172,8 +176,16 @@ color_mode_9
             blue = 0;
         }
 
-        rgb_data.push(green);
-        rgb_data.push(red);
+        if swap_red_green
+        {
+            rgb_data.push(green);
+            rgb_data.push(red);
+        }
+        else
+        {
+            rgb_data.push(red);
+            rgb_data.push(green);
+        }
         rgb_data.push(blue);
     }
 

@@ -5,6 +5,7 @@ Implementing a Mandelbrot Image Generator (In Rust) (Agai... wait, this is my fi
 
 ## Examples
 ```mandelbrot-rust -w 4000 -h 4000 --x_mid=-1.25737518304050244765 --y_mid=0.378759463618701690545 -z 6800000000 -i 2040 -c 13```
+```mandelbrot-rust -h 2000 -w 2000 -x 0.443841 -y 0.372062 -z 18000 -i 2040 -c 91```
 
 ## Structure
 - ```main.rs``` contains the main function called upon startup (duh)
