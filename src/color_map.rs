@@ -8,6 +8,7 @@ pub enum EColorMode
 	BW
 }
 
+#[allow(non_snake_case)]
 pub fn
 to_EColorMode
 (

@@ -20,6 +20,6 @@ write_exif_description
 	);
 
 	// Write metadata to image file
-	metadata.write_to_file(file_path);
+	let _ = metadata.write_to_file(file_path);
 
 }
