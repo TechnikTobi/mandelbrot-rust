@@ -4,6 +4,7 @@ pub enum EColorMode
 {
     DEFAULT,
     BLUE,
+    M09,
     M13,
     BW
 }
@@ -20,6 +21,7 @@ to_EColorMode
     {
         1  =>   EColorMode::BLUE,
         2  =>   EColorMode::BW,
+        9  =>   EColorMode::M09,
         13 =>   EColorMode::M13,
         _  =>   EColorMode::DEFAULT,
     }
@@ -41,6 +43,7 @@ map_raw_to_rgb
     {
         EColorMode::BLUE    => color_mode_blue(raw_data, iterations),
         EColorMode::DEFAULT => color_mode_default(raw_data, iterations),
+        EColorMode::M09     => color_mode_9(raw_data, iterations),
         EColorMode::M13     => color_mode_13(raw_data, iterations),
         EColorMode::BW      => panic!("Not yet implemented"),
     }
@@ -126,6 +129,56 @@ color_mode_blue
     }
 
     return rgb_data;
+}
+
+fn
+color_mode_9
+(
+    raw_data:  &Vec<u64>,
+    iterations: u64
+)
+-> Vec<u8>
+{
+    let mut rgb_data = Vec::with_capacity(raw_data.len() * 3);
+
+    for value in raw_data
+    {
+        let t_value = (value % 255) as u8;
+        let u_value = 10 * ((t_value-1) % 25 + 1);
+        let v_value = 255 - u_value;
+
+        let mut red: u8   = 0;
+        let mut green: u8 = 0;
+        let mut blue:u8   = 0;
+
+        match t_value
+        {
+            0  ..=25  => { red = u_value;                                  },
+            26 ..=50  => { red = 255;     green = u_value;                 },
+            51 ..=75  => { red = v_value; green = 255;                     },
+            76 ..=100 => {                green = v_value;                 },
+            101..=125 => {                                 blue = u_value; },
+            126..=150 => {                green = u_value; blue = 255;     },
+            151..=175 => { red = u_value; green = 255;     blue = 255;     },
+            176..=200 => { red = 255;     green = v_value; blue = 255;     },
+            201..=225 => { red = 255;                      blue = v_value; },
+            226..=255 => { red = 255 - (15.0 * (t_value - 225) as f32) as u8; },
+        };
+
+        if t_value == 0 || *value == iterations
+        {
+            red = 0;
+            green = 0;
+            blue = 0;
+        }
+
+        rgb_data.push(green);
+        rgb_data.push(red);
+        rgb_data.push(blue);
+    }
+
+    return rgb_data;
+
 }
 
 fn
