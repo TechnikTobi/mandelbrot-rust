@@ -23,6 +23,9 @@ generate_raw_data
     let x_start = x_mid - x_span/2.0;
     let y_end   = y_mid + y_span/2.0;
 
+    println!("X range: {} - {}", x_start, x_start + ppi * width as f64);
+    println!("Y range: {} - {}", y_end - ppi * height as f64, y_end);
+
     // Reserve & Init memory for the raw data 
     let mut raw_data = vec![0; width as usize * height as usize];
 
