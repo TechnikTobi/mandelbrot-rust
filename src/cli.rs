@@ -81,13 +81,13 @@ impl CliArgs
         
         // See about 'value_t' macro at: https://docs.rs/clap/2.31.1/clap/macro.value_t.html
         let args = CliArgs {
-            width: value_t!(cli.value_of("width"), u16).unwrap_or(400 as u16),
-            height: value_t!(cli.value_of("height"), u16).unwrap_or(400 as u16),
-            x_mid: value_t!(cli.value_of("x_mid"), f64).unwrap_or(0.0 as f64),
-            y_mid: value_t!(cli.value_of("y_mid"), f64).unwrap_or(0.0 as f64),
-            zoom: value_t!(cli.value_of("zoom"), f64).unwrap_or(0.5 as f64),
-            iterations: value_t!(cli.value_of("iterations"), u64).unwrap_or(100 as u64),
-            color_mode: value_t!(cli.value_of("color_mode"), u8).unwrap_or(0 as u8),
+            width:            value_t!(cli.value_of("width"),       u16   ).unwrap_or(400 as u16),
+            height:           value_t!(cli.value_of("height"),      u16   ).unwrap_or(400 as u16),
+            x_mid:            value_t!(cli.value_of("x_mid"),       f64   ).unwrap_or(0.0 as f64),
+            y_mid:            value_t!(cli.value_of("y_mid"),       f64   ).unwrap_or(0.0 as f64),
+            zoom:             value_t!(cli.value_of("zoom"),        f64   ).unwrap_or(0.5 as f64),
+            iterations:       value_t!(cli.value_of("iterations"),  u64   ).unwrap_or(100 as u64),
+            color_mode:       value_t!(cli.value_of("color_mode"),  u8    ).unwrap_or(0   as u8),
             output_file_name: value_t!(cli.value_of("output_file"), String).unwrap_or(String::from("image.png"))
         };
 
