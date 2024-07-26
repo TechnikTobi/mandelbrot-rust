@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 num = "0.4"
-image = "0.24.3"
-clap = { version = "3.2.22", features = ["derive"] }
-little_exif = "0.1"
+image = "0.25.2"
+clap = { version = "^3.2", features = ["derive"] }
+little_exif = "^0.3"
 rayon = "1.10.0"
